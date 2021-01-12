@@ -11,6 +11,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 var crypto = require("crypto");
+var cors = require('cors');
 
 dotenv.config({ path: '.env' });
 dotenv.config();
@@ -71,6 +72,7 @@ const Admin = mongoose.model('Admin', {
 
 // Set up variables to use package
 myApp = express();
+myApp.use(cors());
 
 // Set up path and public folders and view folders
 myApp.set('views', path.join(__dirname, 'views'));
@@ -245,9 +247,9 @@ myApp.get('/chart', function(req, res){
 
 // Ajax for roomDate
 myApp.get('/roomData', function(req, res){
-    if (req.session.userLoggedIn){
+    //if (req.session.userLoggedIn){
         res.send({roomData: roomData});
-    }
+    //}
 });
 
 // Ajax for temperature on the selected date
