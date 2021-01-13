@@ -6,6 +6,8 @@
 
 3. ESP8266 MQTT -> GCP(mosquitto) -> GCP(Express:8080) -> <b>GCP(NGINX: React Production Build 8888)</b>
 
+4. ESP8266 MQTT -> GCP(mosquitto) -> <b>GCP NGINX(Express -> https://domain/api/ , React -> https://domain/)</b>
+
 ### Webpage Screenshots
 <p align="center">
   <img src="https://github.com/hyp0126/react-express-mqtt-web/blob/master/RealTimeGuage.png?raw=true" width="700" />
