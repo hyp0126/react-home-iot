@@ -254,7 +254,7 @@ myApp.get('/roomData', function(req, res){
 
 // Ajax for temperature on the selected date
 myApp.post('/temperature', function(req, res){
-    if (req.session.userLoggedIn){
+    //if (req.session.userLoggedIn){
         var localDate = new Date(req.body.date);
         var year = localDate.getFullYear();
         var month = localDate.getMonth();
@@ -272,7 +272,7 @@ myApp.post('/temperature', function(req, res){
             }
             res.send({tempMsgs: tempMsgs});
         });
-    }
+    //}
 });
 
 // Toggle Led
@@ -284,7 +284,7 @@ var mqttPubOptions = {
 myApp.post('/led', function(req, res){
     var message='';
 
-    if (req.session.userLoggedIn){
+    //if (req.session.userLoggedIn){
         var id = parseInt(req.body.id);
         if (id > 0 && id <= maxRoomNumber) {
             if (roomData[id-1].ledState == '1'){
@@ -297,7 +297,7 @@ myApp.post('/led', function(req, res){
                 console.log("publishing", `home/room${id}/led/${message}`);
             }
         }
-    }
+    //}
 });
 
 // 404 page
