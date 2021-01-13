@@ -187,7 +187,7 @@ mqttclient.on("error",function(error){
 // Login page
 var userToken;
 
-myApp.post('/login', function(req, res){
+myApp.post('/api/login', function(req, res){
     var user = req.body.username;
     var pass = req.body.password;
 
@@ -212,7 +212,7 @@ myApp.post('/login', function(req, res){
 });
 
 // Logout
-myApp.post('/logout', function(req, res){
+myApp.post('/api/logout', function(req, res){
 
     userToken = null;
     if (req.session.username) {
@@ -225,7 +225,7 @@ myApp.post('/logout', function(req, res){
 });
 
 // Ajax for roomDate
-myApp.post('/roomData', function(req, res){
+myApp.post('/api/roomData', function(req, res){
     if (userToken != null && req.body.token === userToken){
     //if (req.session.userLoggedIn){
         res.send({roomData: roomData});
@@ -233,12 +233,12 @@ myApp.post('/roomData', function(req, res){
 });
 
 // Test
-myApp.get('/hello', function(req, res){
+myApp.get('/api/hello', function(req, res){
 	res.send({tempMsgs: "Hello"});
 });
 
 // Ajax for temperature on the selected date
-myApp.post('/temperature', function(req, res){
+myApp.post('/api/temperature', function(req, res){
     if (userToken != null && req.body.token === userToken){
     //if (req.session.userLoggedIn){
         var localDate = new Date(req.body.date);
@@ -267,7 +267,7 @@ var mqttPubOptions = {
     qos:1
 };
 
-myApp.post('/led', function(req, res){
+myApp.post('/api/led', function(req, res){
     var message='';
 
     if (userToken != null && req.body.token === userToken){
@@ -290,6 +290,7 @@ myApp.post('/led', function(req, res){
 // 404 page
 myApp.all('*', function(req, res) {
     res.status(404).send('<h1>404 Not Found</h1>');
+    console.log(req);
 });
 
 // Start the server and listen at a port
