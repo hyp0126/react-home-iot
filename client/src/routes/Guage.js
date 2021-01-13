@@ -6,6 +6,7 @@ import 'fontsource-roboto';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
+import * as DotEnv from './DotEnv';
 
 const styles = theme => ({
     root: {
@@ -43,7 +44,7 @@ class Guage extends React.Component {
         const {
             data : { roomData },
         } = await axios.post(
-          "http://localhost:8080/roomData",
+            DotEnv.ADDRESS_ROOMDATA,
           { token: sessionStorage.getItem('token') }
         );
 
@@ -63,7 +64,7 @@ class Guage extends React.Component {
     onChangeLed = async (e) => {
         console.log(e.target.id);
         console.log(e.target.value);
-        axios.post('http://localhost:8080/led',
+        axios.post(DotEnv.ADDRESS_LED ,
             { id: e.target.id.substr(-1,1),
             token: sessionStorage.getItem('token') });
     }

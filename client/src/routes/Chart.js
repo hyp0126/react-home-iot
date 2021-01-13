@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/styles';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import LineChart from '../components/LineChart';
+import * as DotEnv from './DotEnv';
 
 const styles = theme => ({
     root: {
@@ -37,7 +38,7 @@ class Chart extends React.Component {
         const {
             data : { tempMsgs },
         } = await axios.post(
-          "http://localhost:8080/temperature",
+            DotEnv.ADDRESS_TEMPERATURE,
           { date: date,
             token: sessionStorage.getItem('token')}
         );
