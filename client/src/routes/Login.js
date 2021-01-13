@@ -52,7 +52,7 @@ class Login extends React.Component {
 
         if (token !== null || token !== undefined) {
             sessionStorage.setItem('token', token);
-            if (this.props.history != undefined){
+            if (this.props.history !== undefined){
                 this.props.history.push('/');
             }
             this.setState({isLoggedIn: true});

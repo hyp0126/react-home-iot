@@ -35,13 +35,13 @@ class LineChart extends React.Component {
             }
         }
 
-        var date = new Date(this.props.tempMsgs[0].date);
+        var dateStrs = this.props.dateStr.split('-');
 
 		const options = {
 			animationEnabled: true,
 			theme: "light2", // "light1", "dark1", "dark2"
 			title:{
-				text: `Room Temperature (${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()})`
+				text: `Room Temperature (${dateStrs[1]}/${dateStrs[2]}/${dateStrs[0]})`
 			},
 			axisY: {
                 title: "Degree",

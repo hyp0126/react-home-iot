@@ -43,8 +43,9 @@ class Chart extends React.Component {
             token: sessionStorage.getItem('token')}
         );
 
-        this.setState({ tempMsgs , isLoading: false });
-        //console.log(tempMsgs);
+        this.setState({ isLoading: false });
+        this.setState({ tempMsgs });
+        console.log(tempMsgs);
     };
 
     componentDidMount() {
@@ -58,13 +59,16 @@ class Chart extends React.Component {
         this.setState({
             dateStr: e.target.value,
             isLoading: false 
+        }, () => { 
+            console.log(this.state.dateStr);
+            // Should Post Here (setState is async)
+            this.getTempData(new Date(this.state.dateStr));
         });
-        this.getTempData(new Date(this.state.dateStr));
     }
 
     render() {
         const { classes } = this.props;
-        const { isLoading, tempMsgs } = this.state;
+        const { isLoading, tempMsgs, dateStr } = this.state;
 
         return (
             <Paper className={classes.root}>
@@ -73,7 +77,7 @@ class Chart extends React.Component {
                         id="date"
                         label="Date"
                         type="date"
-                        value={this.state.dateStr}
+                        value={dateStr}
                         defaultValue={'2021-01-04'}
                         className={classes.textField}
                         InputLabelProps={{
@@ -82,10 +86,10 @@ class Chart extends React.Component {
                         onChange={this.onChangeDate}
                     />
                 </form>
-                {isLoading ? (
+                {(isLoading || tempMsgs.length === 0)? (
                     <p>Loading...</p>
                 ) : (
-                    <LineChart tempMsgs = {tempMsgs} />
+                    <LineChart tempMsgs = {tempMsgs} dateStr = {dateStr}/>
                 )}
             </Paper>
         );
