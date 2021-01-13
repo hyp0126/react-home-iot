@@ -4,9 +4,6 @@ import CanvasJSReact from './canvasjs.react';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class LineChart extends React.Component {
-    constructor(props) {
-        super(props);
-    }
     
     toogleDataSeries = (e) => {
         if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {

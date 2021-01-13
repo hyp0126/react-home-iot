@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { HashRouter, Route } from "react-router-dom";
 import Chart from './routes/Chart';
 import Guage from './routes/Guage';
