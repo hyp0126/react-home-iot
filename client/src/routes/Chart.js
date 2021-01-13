@@ -38,7 +38,8 @@ class Chart extends React.Component {
             data : { tempMsgs },
         } = await axios.post(
           "http://localhost:8080/temperature",
-          { date: date}
+          { date: date,
+            token: sessionStorage.getItem('token')}
         );
 
         this.setState({ tempMsgs , isLoading: false });

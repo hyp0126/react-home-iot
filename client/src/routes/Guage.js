@@ -42,13 +42,11 @@ class Guage extends React.Component {
     getRoomData = async () => {
         const {
             data : { roomData },
-        } = await axios.get(
-          "http://localhost:8080/roomData"
+        } = await axios.post(
+          "http://localhost:8080/roomData",
+          { token: sessionStorage.getItem('token') }
         );
-        // const { roomData }
-        //  = await fetch(
-        //   "http://localhost:8080/roomData"
-        // ).then((res) => res.json());
+
         this.setState({ roomData , isLoading: false });
     };
 
@@ -66,7 +64,8 @@ class Guage extends React.Component {
         console.log(e.target.id);
         console.log(e.target.value);
         axios.post('http://localhost:8080/led',
-            { id: e.target.id.substr(-1,1) });
+            { id: e.target.id.substr(-1,1),
+            token: sessionStorage.getItem('token') });
     }
 
     render() {

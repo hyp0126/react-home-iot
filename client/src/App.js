@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { HashRouter, Route } from "react-router-dom";
 import Chart from './routes/Chart';
 import Guage from './routes/Guage';
@@ -8,6 +8,12 @@ import Navigation from "./components/Navigation";
 import './App.css';
 
 function App() {
+  const token = sessionStorage.getItem('token');
+
+  if(!token) {
+    return <Login />
+  }
+
   return (
       <HashRouter>
         <Navigation />

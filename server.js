@@ -185,11 +185,7 @@ mqttclient.on("error",function(error){
 
 // Set up Route
 // Login page
-var redirectPage = '/';
-
-myApp.get('/login', function(req, res){
-    //res.render('login');
-});
+var userToken;
 
 myApp.post('/login', function(req, res){
     var user = req.body.username;
@@ -204,16 +200,21 @@ myApp.post('/login', function(req, res){
             req.session.username = admin.username;
             req.session.userLoggedIn = true;
             // Redirect to the dashboard
-            res.redirect(redirectPage);
-        }
-        else {
+            //res.redirect(redirectPage);
+            userToken = crypto.randomBytes(16).toString('hex');
+            res.send({
+                token: userToken
+            });
+        } else {
             //res.render('login', {error: 'Check username or password!'});
         }
     });
 });
 
 // Logout
-myApp.get('/logout', function(req, res){
+myApp.post('/logout', function(req, res){
+
+    userToken = null;
     if (req.session.username) {
         req.session.destroy(function(err) {
             //res.render('login', {error: 'Sucessfully logged out'});
@@ -223,37 +224,17 @@ myApp.get('/logout', function(req, res){
     }
 });
 
-// Home page
-myApp.get('/', function(req, res){
-    // check if the user is logged in
-    if (req.session.userLoggedIn){
-        //res.render('home', {roomData: roomData});
-    } else {
-        redirectPage = '/';
-        //res.redirect('/login');
-    }
-});
-
-// Chart page
-myApp.get('/chart', function(req, res){
-    // check if the user is logged in
-    if (req.session.userLoggedIn){
-        //res.render('chart', {roomData: roomData});
-    } else {
-        redirectPage = '/chart';
-        //res.redirect('/login');
-    }
-});
-
 // Ajax for roomDate
-myApp.get('/roomData', function(req, res){
+myApp.post('/roomData', function(req, res){
+    if (userToken != null && req.body.token === userToken){
     //if (req.session.userLoggedIn){
         res.send({roomData: roomData});
-    //}
+    }
 });
 
 // Ajax for temperature on the selected date
 myApp.post('/temperature', function(req, res){
+    if (userToken != null && req.body.token === userToken){
     //if (req.session.userLoggedIn){
         var localDate = new Date(req.body.date);
         var year = localDate.getFullYear();
@@ -272,7 +253,7 @@ myApp.post('/temperature', function(req, res){
             }
             res.send({tempMsgs: tempMsgs});
         });
-    //}
+    }
 });
 
 // Toggle Led
@@ -284,6 +265,7 @@ var mqttPubOptions = {
 myApp.post('/led', function(req, res){
     var message='';
 
+    if (userToken != null && req.body.token === userToken){
     //if (req.session.userLoggedIn){
         var id = parseInt(req.body.id);
         if (id > 0 && id <= maxRoomNumber) {
@@ -297,7 +279,7 @@ myApp.post('/led', function(req, res){
                 console.log("publishing", `home/room${id}/led/${message}`);
             }
         }
-    //}
+    }
 });
 
 // 404 page
