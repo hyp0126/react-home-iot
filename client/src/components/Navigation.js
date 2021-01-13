@@ -3,6 +3,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import ListItemText from '@material-ui/core/ListItemText';
+import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,7 +12,8 @@ import { Home } from "@material-ui/icons"
 const styles = theme => ({
   navDisplayFlex: {
     display: `flex`,
-    justifyContent: `space-between`
+    justifyContent: `space-between`,
+    padding: 8
   },
   linkText: {
     textDecoration: `none`,
@@ -41,8 +43,8 @@ class Navigation extends React.Component {
         const { classes } = this.props;
 
         const navLinks = [
-            { title: `Guage`, path: `/` },
-            { title: `Chart`, path: `#chart` },
+            { title: `Real-Time Guage`, path: `#guage` },
+            { title: `Daily Chart`, path: `#chart` },
             { title: `Login`, path: `#login` },
             { title: `Logout`, path: `#logout` },
             ];
@@ -53,6 +55,9 @@ class Navigation extends React.Component {
                 <IconButton edge="start" color="inherit" aria-label="home">
                     <Home fontSize="large" />
                 </IconButton>
+                <Typography variant="h5" component="h5">
+                    Home IoT
+                </Typography>
                 <List
                     component="nav"
                     aria-labelledby="main navigation"
