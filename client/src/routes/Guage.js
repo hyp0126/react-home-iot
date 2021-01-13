@@ -4,11 +4,12 @@ import GaugeChart from 'react-gauge-chart';
 import { withStyles } from '@material-ui/styles';
 import 'fontsource-roboto';
 import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
 
 const styles = theme => ({
     root: {
-        ...theme.typography.button,
+        margin: 16,
         backgroundColor: theme.palette.background.paper,
         padding: theme.spacing(1),
     },
@@ -33,7 +34,7 @@ class Guage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoaded: true,
+            isLoading: true,
             roomData: [],
         };
     }
@@ -64,20 +65,15 @@ class Guage extends React.Component {
     onChangeLed = async (e) => {
         console.log(e.target.id);
         console.log(e.target.value);
-        axios({
-            method: 'post',
-            url: 'http://localhost:8080/led',
-            data: {
-                id: e.target.id.substr(-1,1),
-            }
-        });
+        axios.post('http://localhost:8080/led',
+            { id: e.target.id.substr(-1,1) });
     }
 
     render() {
         const { classes } = this.props;
         const { isLoading, roomData } = this.state;
         return (
-            <div>
+            <Paper className={classes.root}>
                 {isLoading ? (
                     <p>Loading...</p>
                 ) : (
@@ -134,7 +130,7 @@ class Guage extends React.Component {
                     ))}
                     </div>
                 )}
-            </div>
+            </Paper>
         );
     }
 }
