@@ -20,6 +20,7 @@ class LineChart extends React.Component {
         tempDataPoints[1] = [];
         var splits;
 
+        // UTC -> Local Time
         for (var tempMsg of this.props.tempMsgs) {
             splits = tempMsg.topic.split('/');
             if (splits[1] === 'room1') {

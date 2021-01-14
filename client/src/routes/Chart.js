@@ -35,17 +35,27 @@ class Chart extends React.Component {
     }
     
     getTempData = async (date) => {
+        var year = date.getFullYear();
+        var month = date.getMonth();
+        var day = date.getDate();
+        //local -> UTC Time
+        var startTime = new Date(year, month, day, 0, 0, 0);
+        startTime = startTime.toUTCString();
+        var endTime = new Date(year, month, day, 23, 59, 59);
+        endTime = endTime.toUTCString();
+
         const {
             data : { tempMsgs },
         } = await axios.post(
             DotEnv.ADDRESS_TEMPERATURE,
-          { date: date,
+          { startTime: startTime,
+            endTime: endTime,
             token: sessionStorage.getItem('token')}
         );
 
         this.setState({ isLoading: false });
         this.setState({ tempMsgs });
-        console.log(tempMsgs);
+        //console.log(tempMsgs);
     };
 
     componentDidMount() {
@@ -57,18 +67,27 @@ class Chart extends React.Component {
 
     onChangeDate = (e) => {
         this.setState({
-            dateStr: e.target.value,
+            dateStr: String(e.target.value),
             isLoading: false 
         }, () => { 
-            console.log(this.state.dateStr);
             // Should Post Here (setState is async)
-            this.getTempData(new Date(this.state.dateStr));
+            var dateStrs = this.state.dateStr.split('-');
+            this.getTempData(new Date(dateStrs[0], dateStrs[1]-1, dateStrs[2]));
         });
     }
 
     render() {
         const { classes } = this.props;
         const { isLoading, tempMsgs, dateStr } = this.state;
+        var chart;
+
+        if (isLoading) {
+            chart = <p>Loading...</p>;
+        } else if (tempMsgs.length === 0) {
+            chart = <p>No Data</p>;
+        } else {
+            chart = <LineChart tempMsgs = {tempMsgs} dateStr = {dateStr}/>;
+        }
 
         return (
             <Paper className={classes.root}>
@@ -86,11 +105,7 @@ class Chart extends React.Component {
                         onChange={this.onChangeDate}
                     />
                 </form>
-                {(isLoading || tempMsgs.length === 0)? (
-                    <p>Loading...</p>
-                ) : (
-                    <LineChart tempMsgs = {tempMsgs} dateStr = {dateStr}/>
-                )}
+                {chart}
             </Paper>
         );
     }

@@ -148,10 +148,12 @@ mqttclient.on('message',function(topic, message, packet){
     var mqttMsg = new MqttMsg();
     mqttMsg.topic = topic;
     mqttMsg.value = message.toString();
-    mqttMsg.date = new Date();
+    var date = new Date();
+    mqttMsg.date = date.toUTCString();
     // Save the MqttMsg to MongoDB
     mqttMsg.save().then(function(){
-        //console.log('New mqttMsg created');
+        // Display Local time, but save UTC time
+        //console.log(`New mqttMsg created${mqttMsg.date}`);
     });
 });
 
@@ -184,7 +186,7 @@ mqttclient.on("error",function(error){
 });
 
 // Set up Route
-// Login page
+// Login page / get Token
 var userToken;
 
 myApp.post('/api/login', function(req, res){
@@ -199,35 +201,34 @@ myApp.post('/api/login', function(req, res){
             // Store username in session and set logged in true
             req.session.username = admin.username;
             req.session.userLoggedIn = true;
-            // Redirect to the dashboard
-            //res.redirect(redirectPage);
+
+            //Send access token
             userToken = crypto.randomBytes(16).toString('hex');
             res.send({
                 token: userToken
             });
         } else {
-            //res.render('login', {error: 'Check username or password!'});
+            //No response
         }
     });
 });
 
-// Logout
+// Logout / expire token
 myApp.post('/api/logout', function(req, res){
 
     userToken = null;
     if (req.session.username) {
         req.session.destroy(function(err) {
-            //res.render('login', {error: 'Sucessfully logged out'});
+            res.send({logout: true});
         });
     } else {
-        //res.render('login', {error: 'Not logged in yet!'});
+        //No response
     }
 });
 
 // Ajax for roomDate
 myApp.post('/api/roomData', function(req, res){
     if (userToken != null && req.body.token === userToken){
-    //if (req.session.userLoggedIn){
         res.send({roomData: roomData});
     }
 });
@@ -240,13 +241,12 @@ myApp.get('/api/hello', function(req, res){
 // Ajax for temperature on the selected date
 myApp.post('/api/temperature', function(req, res){
     if (userToken != null && req.body.token === userToken){
-    //if (req.session.userLoggedIn){
-        var localDate = new Date(req.body.date);
-        var year = localDate.getFullYear();
-        var month = localDate.getMonth();
-        var day = localDate.getDate();
-        var startTime = new Date(year, month, day, 0, 0, 0);
-        var endTime = new Date(year, month, day, 23, 59, 59);
+        var startTime = new Date(req.body.startTime);
+        var startTime = startTime.toUTCString();     
+        //console.log(`startTime:${startTime}`);
+        var endTime = new Date(req.body.endTime);
+        var endTime = endTime.toUTCString();     
+        //console.log(`endTime:${endTime}`);
         MqttMsg.find({"date": {'$gte': startTime, '$lte': endTime}}).exec(function(err, mqttMsgs){
             var topics;
             var tempMsgs = [];
@@ -256,6 +256,7 @@ myApp.post('/api/temperature', function(req, res){
                     tempMsgs.push(mqttMsgs[i]);
                 }
             }
+
             res.send({tempMsgs: tempMsgs});
         });
     }
@@ -271,7 +272,6 @@ myApp.post('/api/led', function(req, res){
     var message='';
 
     if (userToken != null && req.body.token === userToken){
-    //if (req.session.userLoggedIn){
         var id = parseInt(req.body.id);
         if (id > 0 && id <= maxRoomNumber) {
             if (roomData[id-1].ledState == '1'){
@@ -288,10 +288,10 @@ myApp.post('/api/led', function(req, res){
 });
 
 // 404 page
-myApp.all('*', function(req, res) {
-    res.status(404).send('<h1>404 Not Found</h1>');
-    console.log(req);
-});
+//myApp.all('*', function(req, res) {
+//    res.status(404).send('<h1>404 Not Found</h1>');
+//    console.log(req);
+//});
 
 // Start the server and listen at a port
 myApp.listen(8080, "0.0.0.0");
