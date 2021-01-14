@@ -72,6 +72,16 @@ class Guage extends React.Component {
     render() {
         const { classes } = this.props;
         const { isLoading, roomData } = this.state;
+
+        const token = sessionStorage.getItem('token');
+        if(!token) {
+          return (
+            <Paper className={classes.root}>
+                <p>Please, Log in First</p>
+            </Paper>
+          );
+        }
+
         return (
             <Paper className={classes.root}>
                 {isLoading ? (

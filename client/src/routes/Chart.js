@@ -68,7 +68,7 @@ class Chart extends React.Component {
     onChangeDate = (e) => {
         this.setState({
             dateStr: String(e.target.value),
-            isLoading: false 
+            isLoading: true 
         }, () => { 
             // Should Post Here (setState is async)
             var dateStrs = this.state.dateStr.split('-');
@@ -80,6 +80,15 @@ class Chart extends React.Component {
         const { classes } = this.props;
         const { isLoading, tempMsgs, dateStr } = this.state;
         var chart;
+
+        const token = sessionStorage.getItem('token');
+        if(!token) {
+          return (
+            <Paper className={classes.root}>
+                <p>Please, Log in First</p>
+            </Paper>
+          );
+        }
 
         if (isLoading) {
             chart = <p>Loading...</p>;

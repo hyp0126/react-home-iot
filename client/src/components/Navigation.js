@@ -43,7 +43,7 @@ class Navigation extends React.Component {
         const { classes } = this.props;
 
         const navLinks = [
-            { title: `Real-Time Guage`, path: `#guage` },
+            { title: `Real-Time Gauge`, path: `#gauge` },
             { title: `Daily Chart`, path: `#chart` },
             { title: `Login`, path: `#login` },
             { title: `Logout`, path: `#logout` },
