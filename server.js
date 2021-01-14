@@ -294,5 +294,5 @@ myApp.post('/api/led', function(req, res){
 //});
 
 // Start the server and listen at a port
-myApp.listen(8080, "0.0.0.0");
+myApp.listen(8080);
 console.log('Website at port 8080 was running.');
