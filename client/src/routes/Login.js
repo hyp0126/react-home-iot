@@ -47,7 +47,8 @@ class Login extends React.Component {
         } = await axios.post(
             DotEnv.ADDRESS_LOGIN,
           { username: this.state.username,
-            password: this.state.password }
+            password: this.state.password },
+            { withCredentials: true }
         );
 
         if (token !== null || token !== undefined) {
@@ -71,24 +72,24 @@ class Login extends React.Component {
                     {this.state.isLoggedIn ? (
                         <p>successfully logged in</p>
                     ) : (
-                        <div>
-                        <Grid container spacing={8} alignItems="flex-end">
-                        <Grid item md={true} sm={true} xs={true}>
-                            <TextField id="username" label="Username" type="email" 
-                            onChange={this.onChangeUsername} fullWidth autoFocus required />
-                        </Grid>
-                        </Grid>
-                        <Grid container spacing={8} alignItems="flex-end">
+                        <form noValidate autoComplete="off">
+                            <Grid container spacing={8} alignItems="flex-end">
                             <Grid item md={true} sm={true} xs={true}>
-                                <TextField id="password" label="Password" type="password" 
-                                onChange={this.onChangePassword} fullWidth required />
+                                <TextField id="username" label="Username" type="email" 
+                                onChange={this.onChangeUsername} fullWidth autoFocus required />
                             </Grid>
-                        </Grid>
-                        <Grid container justify="center" style={{ marginTop: '10px' }}>
-                            <Button size="large" variant="outlined" color="primary" 
-                            onClick={this.handleSubmit} style={{ textTransform: "none" }}>Login</Button>
-                        </Grid>
-                        </div>
+                            </Grid>
+                            <Grid container spacing={8} alignItems="flex-end">
+                                <Grid item md={true} sm={true} xs={true}>
+                                    <TextField id="password" label="Password" type="password" 
+                                    onChange={this.onChangePassword} fullWidth required />
+                                </Grid>
+                            </Grid>
+                            <Grid container justify="center" style={{ marginTop: '10px' }}>
+                                <Button size="large" variant="outlined" color="primary" 
+                                onClick={this.handleSubmit} style={{ textTransform: "none" }}>Login</Button>
+                            </Grid>
+                        </form>
                     )}
                 </Paper>
             </div>

@@ -45,7 +45,8 @@ class Guage extends React.Component {
             data : { roomData },
         } = await axios.post(
             DotEnv.ADDRESS_ROOMDATA,
-          { token: sessionStorage.getItem('token') }
+          { token: sessionStorage.getItem('token') },
+          { withCredentials: true }
         );
 
         this.setState({ roomData , isLoading: false });
@@ -66,7 +67,8 @@ class Guage extends React.Component {
         console.log(e.target.value);
         axios.post(DotEnv.ADDRESS_LED ,
             { id: e.target.id.substr(-1,1),
-            token: sessionStorage.getItem('token') });
+            token: sessionStorage.getItem('token') },
+            { withCredentials: true });
     }
 
     render() {

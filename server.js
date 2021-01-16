@@ -12,6 +12,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 var crypto = require("crypto");
 var cors = require('cors');
+var cookieParser = require('cookie-parser');
 
 dotenv.config({ path: '.env' });
 dotenv.config();
@@ -72,7 +73,17 @@ const Admin = mongoose.model('Admin', {
 
 // Set up variables to use package
 myApp = express();
-myApp.use(cors());
+
+// const corsOption = {
+//     credentials: true,
+//     origin: ['http://localhost:3000'],
+//     allowedHeaders: ["Content-Type","Authorization","X-Requested-With","X-Forwarded-Proto", "Cookie","Set-Cookie"],
+//     exposedHeaders: ["Content-Type","Authorization","X-Requested-With","X-Forwarded-Proto","Cookie","Set-Cookie"]
+//   };
+// myApp.use(cors(corsOption)); 
+// Access-Control-Max-Age -> stop many preflight
+//myApp.use(cors({maxAge: 600})); 
+myApp.use(cors({ credentials: true, origin: true }))
 
 // Set up path and public folders and view folders
 myApp.set('views', path.join(__dirname, 'views'));
@@ -82,6 +93,9 @@ myApp.use(express.static(__dirname + '/public'));
 myApp.set('view engine', 'ejs');
 myApp.use(bodyParser.urlencoded({extended: false}));
 myApp.use(bodyParser.json());
+
+// Set up Cookie Parser
+myApp.use(cookieParser());
 
 // Set up session 
 myApp.use(session({
@@ -228,7 +242,8 @@ myApp.post('/api/logout', function(req, res){
 
 // Ajax for roomDate
 myApp.post('/api/roomData', function(req, res){
-    if (userToken != null && req.body.token === userToken){
+    if (req.session.userLoggedIn){
+    //if (userToken != null && req.body.token === userToken){
         res.send({roomData: roomData});
     }
 });
@@ -240,7 +255,8 @@ myApp.get('/api/hello', function(req, res){
 
 // Ajax for temperature on the selected date
 myApp.post('/api/temperature', function(req, res){
-    if (userToken != null && req.body.token === userToken){
+    if (req.session.userLoggedIn){
+    //if (userToken != null && req.body.token === userToken){
         var startTime = new Date(req.body.startTime);
         var startTime = startTime.toUTCString();     
         //console.log(`startTime:${startTime}`);
@@ -271,7 +287,8 @@ var mqttPubOptions = {
 myApp.post('/api/led', function(req, res){
     var message='';
 
-    if (userToken != null && req.body.token === userToken){
+    if (req.session.userLoggedIn){
+    //if (userToken != null && req.body.token === userToken){
         var id = parseInt(req.body.id);
         if (id > 0 && id <= maxRoomNumber) {
             if (roomData[id-1].ledState == '1'){

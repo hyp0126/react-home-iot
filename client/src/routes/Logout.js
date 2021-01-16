@@ -4,7 +4,8 @@ import * as DotEnv from './DotEnv';
 function Logout() {
     sessionStorage.clear('token');
     axios.post(DotEnv.ADDRESS_LOGOUT,
-    { token: sessionStorage.getItem('token')});
+    { token: sessionStorage.getItem('token')},
+    { withCredentials: true });
     //this.props.history.push('/');
     return <div><p>Logout</p></div>;
 } 

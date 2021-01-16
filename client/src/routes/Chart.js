@@ -50,7 +50,8 @@ class Chart extends React.Component {
             DotEnv.ADDRESS_TEMPERATURE,
           { startTime: startTime,
             endTime: endTime,
-            token: sessionStorage.getItem('token')}
+            token: sessionStorage.getItem('token')},
+            { withCredentials: true }
         );
 
         this.setState({ isLoading: false });
@@ -106,7 +107,6 @@ class Chart extends React.Component {
                         label="Date"
                         type="date"
                         value={dateStr}
-                        defaultValue={'2021-01-04'}
                         className={classes.textField}
                         InputLabelProps={{
                             shrink: true,
