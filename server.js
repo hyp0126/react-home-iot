@@ -53,8 +53,7 @@ dbConnection.on('reconnected', function () {
 
 dbConnection.on('disconnected', function() {
   console.log('MongoDB disconnected!');
-  mongoose.connect(process.env.MONGODB_URI, dbOption);
-});
+  mongoose.connect(process.env.MONGODB_URI, dbOption);});
 
 mongoose.connect(process.env.MONGODB_URI, dbOption);
 
@@ -74,16 +73,16 @@ const Admin = mongoose.model('Admin', {
 // Set up variables to use package
 myApp = express();
 
-// const corsOption = {
-//     credentials: true,
-//     origin: ['http://localhost:3000'],
-//     allowedHeaders: ["Content-Type","Authorization","X-Requested-With","X-Forwarded-Proto", "Cookie","Set-Cookie"],
-//     exposedHeaders: ["Content-Type","Authorization","X-Requested-With","X-Forwarded-Proto","Cookie","Set-Cookie"]
-//   };
-// myApp.use(cors(corsOption)); 
+const corsOption = {
+    credentials: true,
+    origin: process.env.CORS_ORIGIN.split(' '),
+    allowedHeaders: ["Content-Type","Authorization","X-Requested-With","X-Forwarded-Proto", "Cookie","Set-Cookie"],
+    exposedHeaders: ["Content-Type","Authorization","X-Requested-With","X-Forwarded-Proto","Cookie","Set-Cookie"]
+  };
+ myApp.use(cors(corsOption)); 
 // Access-Control-Max-Age -> stop many preflight
 //myApp.use(cors({maxAge: 600})); 
-myApp.use(cors({ credentials: true, origin: true }))
+//myApp.use(cors({ credentials: true, origin: ['http//localhost:3000'] }))
 
 // Set up path and public folders and view folders
 myApp.set('views', path.join(__dirname, 'views'));
@@ -217,7 +216,7 @@ myApp.post('/api/login', function(req, res){
             req.session.userLoggedIn = true;
 
             //Send access token
-            userToken = crypto.randomBytes(16).toString('hex');
+            userToken =  crypto.randomBytes(16).toString('hex');
             res.send({
                 token: userToken
             });
@@ -242,8 +241,8 @@ myApp.post('/api/logout', function(req, res){
 
 // Ajax for roomDate
 myApp.post('/api/roomData', function(req, res){
-    if (req.session.userLoggedIn){
-    //if (userToken != null && req.body.token === userToken){
+    if (req.session.userLoggedIn ||
+       (userToken != null && req.body.token === userToken)){
         res.send({roomData: roomData});
     }
 });
@@ -255,8 +254,8 @@ myApp.get('/api/hello', function(req, res){
 
 // Ajax for temperature on the selected date
 myApp.post('/api/temperature', function(req, res){
-    if (req.session.userLoggedIn){
-    //if (userToken != null && req.body.token === userToken){
+    if (req.session.userLoggedIn ||
+       (userToken != null && req.body.token === userToken)){
         var startTime = new Date(req.body.startTime);
         var startTime = startTime.toUTCString();     
         //console.log(`startTime:${startTime}`);
@@ -287,8 +286,8 @@ var mqttPubOptions = {
 myApp.post('/api/led', function(req, res){
     var message='';
 
-    if (req.session.userLoggedIn){
-    //if (userToken != null && req.body.token === userToken){
+    if (req.session.userLoggedIn ||
+       (userToken != null && req.body.token === userToken)){
         var id = parseInt(req.body.id);
         if (id > 0 && id <= maxRoomNumber) {
             if (roomData[id-1].ledState == '1'){
