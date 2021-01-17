@@ -6,6 +6,7 @@ import 'fontsource-roboto';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
+import Box from '@material-ui/core/Box';
 import * as DotEnv from './DotEnv';
 
 const styles = theme => ({
@@ -17,9 +18,10 @@ const styles = theme => ({
     guageRow: {
         margin: 8,
         display: 'flex',
+        flexWrap: "wrap",
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'flex-start',
     },
     guageCol: {
         margin: 2,
@@ -89,58 +91,66 @@ class Guage extends React.Component {
                 {isLoading ? (
                     <p>Loading...</p>
                 ) : (
-                    <div className={classes.guageRow}>
+                    <Box className={classes.guageRow}>
                     {roomData.map((data, i) => (
-                        <div key={i} className={classes.guageCol}>
-                        <Typography variant="h5" component="h5">
-                            Room{i+1}
-                        </Typography>
-                        <Typography variant="h6" component="h6">
-                            LED
-                        </Typography>
-                        <Switch id={'led'+i+1} value={data.ledState} checked={data.ledState==='1'} onChange={(e) => this.onChangeLed(e)} />
-                        <Typography variant="h6" component="h6">
-                            Temperature
-                        </Typography>
-                        <GaugeChart id='gauge-chart-5'
-                            nrOfLevels={420}
-                            arcsLength={[0.3, 0.5, 0.2]}
-                            colors={['#5BE12C', '#F5CD19', '#EA4228']}
-                            percent={data.temperature / 40}
-                            arcPadding={0.02}
-                            formatTextValue={value => (value / 100 * 40).toFixed(2)}
-                            textColor='#FF0000'     
-                            needleColor='#A9A9A9'                       
-                        />
-                        <Typography variant="h6" component="h6">
-                            Humidity
-                        </Typography>
-                        <GaugeChart id='gauge-chart-5'
-                            nrOfLevels={420}
-                            arcsLength={[0.3, 0.5, 0.2]}
-                            colors={['#5BE12C', '#F5CD19', '#EA4228']}
-                            percent={data.humidity / 100}
-                            arcPadding={0.02}
-                            formatTextValue={value => value}
-                            textColor='#FF0000'     
-                            needleColor='#A9A9A9'                       
-                        />
-                        <Typography variant="h6" component="h6">
-                            Brightness
-                        </Typography>
-                        <GaugeChart id='gauge-chart-5'
-                            nrOfLevels={420}
-                            arcsLength={[0.3, 0.5, 0.2]}
-                            colors={['#5BE12C', '#F5CD19', '#EA4228']}
-                            percent={(1024 - data.brightness) / 1024}
-                            arcPadding={0.02}
-                            formatTextValue={value => (value / 100 * 1024).toFixed(0)}
-                            textColor='#FF0000'     
-                            needleColor='#A9A9A9'                       
-                        />
-                        </div>
+                        <Box key={i} className={classes.guageCol}>
+                            <Typography variant="h5" component="h5">
+                                Room{i+1}
+                            </Typography>
+                            {data.ledState === "" ? (<div></div>) : (<div className={classes.guageCol}>
+                                <Typography variant="h6" component="h6">
+                                    LED
+                                </Typography>
+                                <Switch id={'led'+i+1} value={data.ledState} checked={data.ledState==='1'} onChange={(e) => this.onChangeLed(e)} />
+                            </div>)}
+                            {data.temperature === "" ? (<div></div>) : (<div className={classes.guageCol}>
+                                <Typography variant="h6" component="h6">
+                                    Temperature
+                                </Typography>
+                                <GaugeChart id='gauge-chart-5'
+                                    nrOfLevels={420}
+                                    arcsLength={[0.3, 0.5, 0.2]}
+                                    colors={['#5BE12C', '#F5CD19', '#EA4228']}
+                                    percent={data.temperature / 40}
+                                    arcPadding={0.02}
+                                    formatTextValue={value => (value / 100 * 40).toFixed(2)}
+                                    textColor='#FF0000'     
+                                    needleColor='#A9A9A9'                       
+                                />
+                            </div>)}
+                            {data.humidity === "" ? (<div></div>) : (<div className={classes.guageCol}>
+                                <Typography variant="h6" component="h6">
+                                    Humidity
+                                </Typography>
+                                <GaugeChart id='gauge-chart-5'
+                                    nrOfLevels={420}
+                                    arcsLength={[0.3, 0.5, 0.2]}
+                                    colors={['#5BE12C', '#F5CD19', '#EA4228']}
+                                    percent={data.humidity / 100}
+                                    arcPadding={0.02}
+                                    formatTextValue={value => value}
+                                    textColor='#FF0000'     
+                                    needleColor='#A9A9A9'                       
+                                />
+                            </div>)}
+                            {data.brightness === "" ? (<div></div>) : (<div className={classes.guageCol}>
+                                <Typography variant="h6" component="h6">
+                                    Brightness
+                                </Typography>
+                                <GaugeChart id='gauge-chart-5'
+                                    nrOfLevels={420}
+                                    arcsLength={[0.3, 0.5, 0.2]}
+                                    colors={['#5BE12C', '#F5CD19', '#EA4228']}
+                                    percent={(1024 - data.brightness) / 1024}
+                                    arcPadding={0.02}
+                                    formatTextValue={value => (value / 100 * 1024).toFixed(0)}
+                                    textColor='#FF0000'     
+                                    needleColor='#A9A9A9'                       
+                                />
+                            </div>)}
+                        </Box>
                     ))}
-                    </div>
+                    </Box>
                 )}
             </Paper>
         );

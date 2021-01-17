@@ -91,12 +91,14 @@ class Chart extends React.Component {
           );
         }
 
+        var maxRoomNum = 3;
+
         if (isLoading) {
             chart = <p>Loading...</p>;
         } else if (tempMsgs.length === 0) {
             chart = <p>No Data</p>;
         } else {
-            chart = <LineChart tempMsgs = {tempMsgs} dateStr = {dateStr}/>;
+            chart = <LineChart maxRoomNum = {maxRoomNum} tempMsgs = {tempMsgs} dateStr = {dateStr}/>;
         }
 
         return (

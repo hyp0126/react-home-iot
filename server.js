@@ -123,7 +123,7 @@ var mqttclient = mqtt.connect(process.env.MQTT_SERVER_URI, options);
 console.log("connected flag  " + mqttclient.connected);
 
 // Initialize mqtt data buffer
-const maxRoomNumber = 2;
+const maxRoomNumber = 3;
 var roomData = [];
 for (var i = 0; i < maxRoomNumber; i++){
     roomData.push({

@@ -14,7 +14,7 @@ const styles = theme => ({
         padding: theme.spacing(1),
     },
     login: {
-        width: 500,
+        width: 250,
         padding: theme.spacing(1),
     },
 });

@@ -16,28 +16,40 @@ class LineChart extends React.Component {
 
     render() {
         var tempDataPoints = [];
-        tempDataPoints[0] = [];
-        tempDataPoints[1] = [];
         var splits;
 
-        // UTC -> Local Time
-        for (var tempMsg of this.props.tempMsgs) {
-            splits = tempMsg.topic.split('/');
-            if (splits[1] === 'room1') {
-                tempDataPoints[0].push({
-                    x: new Date(tempMsg.date),
-                    y: parseFloat(tempMsg.value)
-                });
-            } else if (splits[1] === 'room2') {
-                tempDataPoints[1].push({
-                    x: new Date(tempMsg.date),
-                    y: parseFloat(tempMsg.value)
-                });
+        for (let i = 0; i < this.props.maxRoomNum; i++) {
+            tempDataPoints[i] = [];
+            // UTC -> Local Time
+            for (var tempMsg of this.props.tempMsgs) {
+                splits = tempMsg.topic.split('/');
+                if (splits[1] === `room${i+1}`) {
+                    tempDataPoints[i].push({
+                        x: new Date(tempMsg.date),
+                        y: parseFloat(tempMsg.value)
+                    });
+                }
             }
         }
 
         var dateStrs = this.props.dateStr.split('-');
 
+        var dataPtrs = [];
+        const colorTable = ['blue', 'red', 'green', 'black', 'orange'];
+        for (let i = 0; i < this.props.maxRoomNum; i++) {
+            dataPtrs.push({
+                type: "line",
+                showInLegend: true,
+                name: `Room${i+1}`,
+                markerType: "square",
+                xValueFormatString: "HH:mm",
+                color: colorTable[i],
+                //lineDashType: "dash",
+                yValueFormatString: "#,##0",
+                dataPoints: tempDataPoints[i]
+            });
+        }
+        
 		const options = {
 			animationEnabled: true,
 			theme: "light2", // "light1", "dark1", "dark2"
@@ -62,24 +74,7 @@ class LineChart extends React.Component {
                 dockInsidePlotArea: true,
                 itemclick: this.toogleDataSeries
             },
-            data: [{
-                type: "line",
-                showInLegend: true,
-                name: "Room1",
-                markerType: "square",
-                xValueFormatString: "HH:mm",
-                color: "#F08080",
-                yValueFormatString: "#,##0",
-                dataPoints: tempDataPoints[0]
-            },
-            {
-                type: "line",
-                showInLegend: true,
-                name: "Room2",
-                lineDashType: "dash",
-                yValueFormatString: "#,##0",
-                dataPoints: tempDataPoints[1]
-            }]
+            data: dataPtrs
 		}
 		return (
 		<div>

@@ -11,14 +11,15 @@ import { Home } from "@material-ui/icons"
 
 const styles = theme => ({
   navDisplayFlex: {
-    display: `flex`,
-    justifyContent: `space-between`,
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     padding: 8
   },
   linkText: {
-    textDecoration: `none`,
-    textTransform: `uppercase`,
-    color: `white`
+    textDecoration: 'none',
+    textTransform: 'uppercase',
+    color: 'white'
   }
 });
 
@@ -43,10 +44,10 @@ class Navigation extends React.Component {
         const { classes } = this.props;
 
         const navLinks = [
-            { title: `Real-Time Gauge`, path: `#gauge` },
-            { title: `Daily Chart`, path: `#chart` },
-            { title: `Login`, path: `#login` },
-            { title: `Logout`, path: `#logout` },
+            { title: 'Real-Time Gauge', path: '#gauge' },
+            { title: 'Daily Chart', path: '#chart' },
+            { title: 'Login', path: '#login' },
+            { title: 'Logout', path: '#logout' },
             ];
 
         return (
