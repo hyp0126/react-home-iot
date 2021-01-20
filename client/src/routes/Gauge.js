@@ -101,7 +101,7 @@ class Guage extends React.Component {
                                 <Typography variant="h6" component="h6">
                                     LED
                                 </Typography>
-                                <Switch id={'led'+i+1} value={data.ledState} checked={data.ledState==='1'} onChange={(e) => this.onChangeLed(e)} />
+                                <Switch id={'led'+(i+1)} value={data.ledState} checked={data.ledState==='1'} onChange={(e) => this.onChangeLed(e)} />
                             </div>)}
                             {data.temperature === "" ? (<div></div>) : (<div className={classes.guageCol}>
                                 <Typography variant="h6" component="h6">
