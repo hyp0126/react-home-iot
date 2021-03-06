@@ -8,7 +8,9 @@
 
 4. ESP8266 MQTT -> GCP(mosquitto) -> <b>GCP NGINX(Express -> https://domain/api/ , React -> https://domain/)</b>
 
-5. (ESP8266) & (UNO->Rpi) -> GCP(mosquitto) -> GCP(Express https://domain/api/) -> <b>AWS EC2(React https://aws.domain/api/)</b>
+5. (ESP8266) & (UNO->Rpi) -> GCP(mosquitto) -> GCP(Express https://domain/api/) -> <b>AWS EC2(React https://aws.domain/)</b>
+
+6. (ESP8266) & (UNO->Rpi) -> <b>AWS#1(mosquitto -> Express, https://mqtt.domain/api/) -> AWS#2(React, https://iot.domain/)</b>
 
 ### Webpage Screenshots
 <p align="center">
