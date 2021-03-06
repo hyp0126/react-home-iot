@@ -7,6 +7,7 @@
 //                datepicker https://gijgo.com/datepicker/example/bootstrap-4
 // 2021-03-06 Remove session and custom token
 //            Add JWT
+//            Add Websocket
 
 dotenv = require("dotenv");
 const express = require("express");
@@ -20,9 +21,6 @@ var cookieParser = require("cookie-parser");
 
 dotenv.config({ path: ".env" });
 dotenv.config();
-
-// Get express session
-//const session = require("express-session");
 
 // Set up DB connection
 const mongoose = require("mongoose");
@@ -115,15 +113,6 @@ myApp.use(bodyParser.json());
 // Set up Cookie Parser
 myApp.use(cookieParser());
 
-// Set up session
-// myApp.use(
-//   session({
-//     secret: "superrandomsecret",
-//     resave: false,
-//     saveUninitialized: true,
-//   })
-// );
-
 // Set up & Connect MQTT server with TLS/SSL
 var mqtt = require("mqtt");
 const fs = require("fs");
@@ -146,8 +135,16 @@ console.log("connected flag  " + mqttclient.connected);
 // Initialize mqtt data buffer
 const maxRoomNumber = 3;
 var roomData = [];
+var prevRoomData = [];
 for (var i = 0; i < maxRoomNumber; i++) {
   roomData.push({
+    temperature: "",
+    humidity: "",
+    brightness: "",
+    ledState: "",
+  });
+
+  prevRoomData.push({
     temperature: "",
     humidity: "",
     brightness: "",
@@ -189,7 +186,30 @@ mqttclient.on("message", function (topic, message, packet) {
     // Display Local time, but save UTC time
     //console.log(`New mqttMsg created${mqttMsg.date}`);
   });
+
+  //checkRoomData();
 });
+
+function checkRoomData() {
+  for (var i = 0; i < maxRoomNumber - 1; i++) {
+    if (
+      roomData[i].temperature != prevRoomData[i].temperature ||
+      roomData[i].humidity != prevRoomData[i].humidity ||
+      roomData[i].brightness != prevRoomData[i].brightness ||
+      roomData[i].ledState != prevRoomData[i].ledState
+    ) {
+      sendMessage(JSON.stringify({ type: typesDef.CONTENT_CHANGE }));
+      break;
+    }
+  }
+
+  for (var i = 0; i < maxRoomNumber; i++) {
+    prevRoomData[i].temperature = roomData[i].temperature;
+    prevRoomData[i].humidity = roomData[i].humidity;
+    prevRoomData[i].brightness = roomData[i].brightness;
+    prevRoomData[i].ledState = roomData[i].ledState;
+  }
+}
 
 mqttclient.on("connect", function () {
   console.log("connected  " + mqttclient.connected);
@@ -314,3 +334,76 @@ myApp.post("/api/led", function (req, res) {
 // Start the server and listen at a port
 myApp.listen(8080);
 console.log("Website at port 8080 was running.");
+
+// Websocket
+// https://github.com/AvanthikaMeenakshi/node-websockets/
+const webSocketsServerPort = 8000;
+const webSocketServer = require("websocket").server;
+const http = require("http");
+// Spinning the http server and the websocket server.
+const server = http.createServer();
+server.listen(webSocketsServerPort);
+const wsServer = new webSocketServer({
+  httpServer: server,
+});
+
+// Generates unique ID for every new connection
+const getUniqueID = () => {
+  const s4 = () =>
+    Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  return s4() + s4() + "-" + s4();
+};
+
+// I'm maintaining all active connections in this object
+const clients = {};
+
+const sendMessage = (json) => {
+  // We are sending the current data to all connected clients
+  Object.keys(clients).map((client) => {
+    clients[client].sendUTF(json);
+  });
+};
+
+const typesDef = {
+  USER_EVENT: "userevent",
+  CONTENT_CHANGE: "contentchange",
+};
+
+wsServer.on("request", function (request) {
+  var userID = getUniqueID();
+
+  console.log(
+    new Date() +
+      " Recieved a new connection from origin " +
+      request.origin +
+      "."
+  );
+
+  var intervalId = setInterval(checkRoomData, 10000);
+
+  // You can rewrite this part of the code to accept only the requests from allowed origin
+  const connection = request.accept(null, request.origin);
+  clients[userID] = connection;
+  console.log(
+    "connected: " + userID + " in " + Object.getOwnPropertyNames(clients)
+  );
+
+  connection.on("message", function (message) {
+    if (message.type === "utf8") {
+      const dataFromClient = JSON.parse(message.utf8Data);
+      const json = { type: dataFromClient.type };
+      sendMessage(JSON.stringify(json));
+    }
+  });
+  // user disconnected
+  connection.on("close", function (connection) {
+    clearInterval(intervalId);
+
+    console.log(new Date() + " Peer " + userID + " disconnected.");
+    const json = { type: typesDef.USER_EVENT };
+    delete clients[userID];
+    sendMessage(JSON.stringify(json));
+  });
+});

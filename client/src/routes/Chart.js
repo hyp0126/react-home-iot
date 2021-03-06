@@ -53,7 +53,6 @@ class Chart extends React.Component {
         endTime: endTime,
         token: sessionStorage.getItem("token"),
       },
-      //{ withCredentials: true }
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,

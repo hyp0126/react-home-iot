@@ -8,6 +8,9 @@ import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
 import Box from "@material-ui/core/Box";
 import * as DotEnv from "./DotEnv";
+import { w3cwebsocket as W3CWebSocket } from "websocket";
+
+var client = null;
 
 const styles = (theme) => ({
   root: {
@@ -58,14 +61,39 @@ class Guage extends React.Component {
     this.setState({ roomData, isLoading: false });
   };
 
+  componentWillMount() {}
+
   componentDidMount() {
     this.getRoomData();
-    var intervalId = setInterval(this.getRoomData, 10000);
-    this.setState({ intervalId: intervalId });
+
+    //var intervalId = setInterval(this.getRoomData, 10000);
+    //this.setState({ intervalId: intervalId });
+
+    if (sessionStorage.getItem("token") != null) {
+      client = new W3CWebSocket(DotEnv.ADDRESS_WEBSOCKET);
+
+      client.onopen = () => {
+        console.log("WebSocket Client Connected");
+      };
+
+      client.onmessage = (message) => {
+        console.log(message);
+        const dataFromServer = JSON.parse(message.data);
+
+        if (dataFromServer.type === "userevent") {
+        } else if (dataFromServer.type === "contentchange") {
+          this.getRoomData();
+        }
+      };
+    }
   }
 
   componentWillUnmount() {
-    clearInterval(this.state.intervalId);
+    //clearInterval(this.state.intervalId);
+    if (client != null) {
+      client.close();
+    }
+    client = null;
   }
 
   onChangeLed = async (e) => {
