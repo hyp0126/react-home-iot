@@ -1,13 +1,14 @@
-import axios from "axios";
-import * as DotEnv from './DotEnv';
+import { homeApiLogout } from "../services/homeapi.service";
 
 function Logout() {
-    sessionStorage.clear('token');
-    axios.post(DotEnv.ADDRESS_LOGOUT,
-    { token: sessionStorage.getItem('token')},
-    { withCredentials: true });
-    //this.props.history.push('/');
-    return <div><p>Logout</p></div>;
-} 
+  homeApiLogout();
+  sessionStorage.clear("token");
+  //this.props.history.push('/');
+  return (
+    <div>
+      <p>Logout</p>
+    </div>
+  );
+}
 
 export default Logout;

@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 import GaugeChart from "react-gauge-chart";
 import { withStyles } from "@material-ui/styles";
 import "fontsource-roboto";
@@ -7,8 +6,9 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Switch from "@material-ui/core/Switch";
 import Box from "@material-ui/core/Box";
-import * as DotEnv from "./DotEnv";
+import * as DotEnv from "../DotEnv";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
+import { homeApiGetRoomData, homeApiSetLed } from "../services/homeapi.service";
 
 var client = null;
 
@@ -45,27 +45,15 @@ class Guage extends React.Component {
     };
   }
 
-  getRoomData = async () => {
-    const {
-      data: { roomData },
-    } = await axios.post(
-      DotEnv.ADDRESS_ROOMDATA,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-      }
-    );
+  componentWillMount() {}
 
+  getRoomData = async () => {
+    var roomData = await homeApiGetRoomData();
     this.setState({ roomData, isLoading: false });
   };
 
-  componentWillMount() {}
-
   componentDidMount() {
     this.getRoomData();
-
     //var intervalId = setInterval(this.getRoomData, 10000);
     //this.setState({ intervalId: intervalId });
 
@@ -99,15 +87,7 @@ class Guage extends React.Component {
   onChangeLed = async (e) => {
     console.log(e.target.id);
     console.log(e.target.value);
-    axios.post(
-      DotEnv.ADDRESS_LED,
-      { id: e.target.id.substr(-1, 1) },
-      {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-      }
-    );
+    homeApiSetLed(e.target.id.substr(-1, 1));
   };
 
   render() {

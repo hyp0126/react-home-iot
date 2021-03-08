@@ -1,10 +1,9 @@
 import React from "react";
-import axios from "axios";
 import { withStyles } from "@material-ui/styles";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import LineChart from "../components/LineChart";
-import * as DotEnv from "./DotEnv";
+import { homeApiGetTempData } from "../services/homeapi.service";
 
 const styles = (theme) => ({
   root: {
@@ -44,21 +43,7 @@ class Chart extends React.Component {
     var endTime = new Date(year, month, day, 23, 59, 59);
     endTime = endTime.toUTCString();
 
-    const {
-      data: { tempMsgs },
-    } = await axios.post(
-      DotEnv.ADDRESS_TEMPERATURE,
-      {
-        startTime: startTime,
-        endTime: endTime,
-        token: sessionStorage.getItem("token"),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-      }
-    );
+    var tempMsgs = await homeApiGetTempData(startTime, endTime);
 
     this.setState({ isLoading: false });
     this.setState({ tempMsgs });
