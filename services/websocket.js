@@ -9,6 +9,10 @@ const wsServer = new webSocketServer({
   httpServer: server,
 });
 
+const db = require("../db");
+Admin = db.Admin;
+const jsonwebtoken = require("jsonwebtoken");
+
 // Generates unique ID for every new connection
 const getUniqueID = () => {
   const s4 = () =>
@@ -38,6 +42,18 @@ sendContentChange = () => {
 };
 
 wsServer.on("request", function (request) {
+  var pass = false;
+  request.cookies.map(async (cookie) => {
+    if (cookie.name == "X-Authorization") {
+      var auth = jsonwebtoken.verify(cookie.value, process.env.JWT_SECRET);
+      await Admin.findOne({ username: auth.user }).exec((pass = true));
+    }
+  });
+
+  if (pass == false) {
+    return;
+  }
+
   var userID = getUniqueID();
 
   console.log(

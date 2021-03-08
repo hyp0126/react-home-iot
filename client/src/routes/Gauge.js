@@ -58,6 +58,9 @@ class Guage extends React.Component {
     //this.setState({ intervalId: intervalId });
 
     if (sessionStorage.getItem("token") != null) {
+      document.cookie =
+        "X-Authorization=" + sessionStorage.getItem("token") + "; path=/";
+
       client = new W3CWebSocket(DotEnv.ADDRESS_WEBSOCKET);
 
       client.onopen = () => {
