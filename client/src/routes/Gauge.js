@@ -9,6 +9,8 @@ import Box from "@material-ui/core/Box";
 import * as DotEnv from "../DotEnv";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { homeApiGetRoomData, homeApiSetLed } from "../services/homeapi.service";
+import { setRoomTemp } from "../actions";
+import { connect } from "react-redux";
 
 var client = null;
 
@@ -50,6 +52,9 @@ class Guage extends React.Component {
   getRoomData = async () => {
     var roomData = await homeApiGetRoomData();
     this.setState({ roomData, isLoading: false });
+
+    //console.log(roomData);
+    this.props.onUpdateRoomTemp(roomData);
   };
 
   componentDidMount() {
@@ -81,10 +86,10 @@ class Guage extends React.Component {
 
   componentWillUnmount() {
     //clearInterval(this.state.intervalId);
-    if (client != null) {
-      client.close();
-    }
-    client = null;
+    // if (client != null) {
+    //   client.close();
+    // }
+    // client = null;
   }
 
   onChangeLed = async (e) => {
@@ -204,5 +209,11 @@ class Guage extends React.Component {
     );
   }
 }
+
+let mapDispatchToProps = (dispatch) => {
+  return { onUpdateRoomTemp: (value) => dispatch(setRoomTemp(value)) };
+};
+
+Guage = connect(null, mapDispatchToProps)(Guage);
 
 export default withStyles(styles)(Guage);

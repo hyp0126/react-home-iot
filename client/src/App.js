@@ -1,11 +1,16 @@
 import React from "react";
 import { HashRouter, Route } from "react-router-dom";
-import Chart from './routes/Chart';
-import Gauge from './routes/Gauge';
-import Login from './routes/Login';
-import Logout from './routes/Logout';
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import roomApp from "./reducers";
+import Chart from "./routes/Chart";
+import Gauge from "./routes/Gauge";
+import Login from "./routes/Login";
+import Logout from "./routes/Logout";
 import Navigation from "./components/Navigation";
-import './App.css';
+import "./App.css";
+
+const store = createStore(roomApp);
 
 function App() {
   // const token = sessionStorage.getItem('token');
@@ -15,6 +20,7 @@ function App() {
   // }
 
   return (
+    <Provider store={store}>
       <HashRouter>
         <Navigation />
         <Route path={["/", "/gauge"]} exact={true} component={Gauge} />
@@ -22,6 +28,7 @@ function App() {
         <Route path="/login" component={Login} />
         <Route path="/logout" component={Logout} />
       </HashRouter>
+    </Provider>
   );
 }
 

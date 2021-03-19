@@ -2,8 +2,15 @@ import React from "react";
 import { withStyles } from "@material-ui/styles";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableContainer from "@material-ui/core/TableContainer";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 import LineChart from "../components/LineChart";
 import { homeApiGetTempData } from "../services/homeapi.service";
+import { connect } from "react-redux";
 
 const styles = (theme) => ({
   root: {
@@ -103,8 +110,36 @@ class Chart extends React.Component {
       );
     }
 
+    var roomDate = this.props.roomData;
+
     return (
       <Paper className={classes.root}>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Room Number</TableCell>
+                <TableCell align="right">Temperature</TableCell>
+                <TableCell align="right">Humidity</TableCell>
+                <TableCell align="right">Brightness</TableCell>
+                <TableCell align="right">LED</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {roomDate.map((data, i) => (
+                <TableRow key={i + 1}>
+                  <TableCell component="th" scope="row">
+                    Room{i + 1}
+                  </TableCell>
+                  <TableCell align="right">{data.temperature}</TableCell>
+                  <TableCell align="right">{data.humidity}</TableCell>
+                  <TableCell align="right">{1024 - data.brightness}</TableCell>
+                  <TableCell align="right">{data.ledState}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
         <form className={classes.container} noValidate>
           <TextField
             id="date"
@@ -123,5 +158,12 @@ class Chart extends React.Component {
     );
   }
 }
+
+let mapStateToProps = (state) => {
+  //console.log(state);
+  return { roomData: state.room.roomData };
+};
+
+Chart = connect(mapStateToProps, null)(Chart);
 
 export default withStyles(styles)(Chart);
