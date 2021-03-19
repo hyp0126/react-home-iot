@@ -66,6 +66,11 @@ class Guage extends React.Component {
       document.cookie =
         "X-Authorization=" + sessionStorage.getItem("token") + "; path=/";
 
+      if (client != null) {
+        client.close();
+        console.log("WebSocket Client Disconected");
+      }
+
       client = new W3CWebSocket(DotEnv.ADDRESS_WEBSOCKET);
 
       client.onopen = () => {
