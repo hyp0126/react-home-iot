@@ -16,6 +16,6 @@ const room = (state = roomTempInitialState, action) => {
   }
 };
 
-const roomApp = combineReducers({ room });
+const rootReducer = combineReducers({ room });
 
-export default roomApp;
+export default rootReducer;
