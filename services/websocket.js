@@ -42,52 +42,47 @@ sendContentChange = () => {
 };
 
 wsServer.on("request", function (request) {
-  var pass = false;
   request.cookies.map(async (cookie) => {
     if (cookie.name == "X-Authorization") {
       var auth = jsonwebtoken.verify(cookie.value, process.env.JWT_SECRET);
-      await Admin.findOne({ username: auth.user }).exec((pass = true));
+      await Admin.findOne({ username: auth.user }).exec(() => {
+        var userID = getUniqueID();
+      
+        console.log(
+          new Date() +
+            " Recieved a new connection from origin " +
+            request.origin +
+            "."
+        );
+      
+        //var intervalId = setInterval(checkRoomData, 10000);
+        var intervalId = setInterval(sendContentChange, 10000);
+      
+        // You can rewrite this part of the code to accept only the requests from allowed origin
+        const connection = request.accept(null, request.origin);
+        clients[userID] = connection;
+        console.log(
+          "connected: " + userID + " in " + Object.getOwnPropertyNames(clients)
+        );
+      
+        connection.on("message", function (message) {
+          if (message.type === "utf8") {
+            const dataFromClient = JSON.parse(message.utf8Data);
+            const json = { type: dataFromClient.type };
+            sendMessage(JSON.stringify(json));
+          }
+        });
+        // user disconnected
+        connection.on("close", function (connection) {
+          clearInterval(intervalId);
+      
+          console.log(new Date() + " Peer " + userID + " disconnected.");
+          const json = { type: typesDef.USER_EVENT };
+          delete clients[userID];
+          sendMessage(JSON.stringify(json));
+        });
+      });
     }
-  });
-
-  if (pass == false) {
-    return;
-  }
-
-  var userID = getUniqueID();
-
-  console.log(
-    new Date() +
-      " Recieved a new connection from origin " +
-      request.origin +
-      "."
-  );
-
-  //var intervalId = setInterval(checkRoomData, 10000);
-  var intervalId = setInterval(sendContentChange, 10000);
-
-  // You can rewrite this part of the code to accept only the requests from allowed origin
-  const connection = request.accept(null, request.origin);
-  clients[userID] = connection;
-  console.log(
-    "connected: " + userID + " in " + Object.getOwnPropertyNames(clients)
-  );
-
-  connection.on("message", function (message) {
-    if (message.type === "utf8") {
-      const dataFromClient = JSON.parse(message.utf8Data);
-      const json = { type: dataFromClient.type };
-      sendMessage(JSON.stringify(json));
-    }
-  });
-  // user disconnected
-  connection.on("close", function (connection) {
-    clearInterval(intervalId);
-
-    console.log(new Date() + " Peer " + userID + " disconnected.");
-    const json = { type: typesDef.USER_EVENT };
-    delete clients[userID];
-    sendMessage(JSON.stringify(json));
   });
 });
 
