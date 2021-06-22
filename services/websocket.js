@@ -42,10 +42,13 @@ sendContentChange = () => {
 };
 
 wsServer.on("request", function (request) {
-  request.cookies.map(async (cookie) => {
-    if (cookie.name == "X-Authorization") {
-      var auth = jsonwebtoken.verify(cookie.value, process.env.JWT_SECRET);
-      await Admin.findOne({ username: auth.user }).exec(() => {
+  const query = request.resourceURL.query;
+  console.log(query.auth);
+  //request.cookies.map(async (cookie) => {
+  //  if (cookie.name == "X-Authorization") {
+  //    var auth = jsonwebtoken.verify(cookie.value, process.env.JWT_SECRET);
+    var auth = jsonwebtoken.verify(query.auth, process.env.JWT_SECRET);
+      Admin.findOne({ username: auth.user }).exec(() => {
         var userID = getUniqueID();
       
         console.log(
@@ -82,8 +85,8 @@ wsServer.on("request", function (request) {
           sendMessage(JSON.stringify(json));
         });
       });
-    }
-  });
+  //  }
+  //});
 });
 
 module.exports = {
