@@ -31,12 +31,19 @@ class Login extends React.Component {
     this.handleSubmit.bind(this);
   }
 
-  onChangeUsername = (e) => {
+  handleChangeUsername = (e) => {
     this.setState({ username: e.target.value });
   };
 
-  onChangePassword = (e) => {
+  handleChangePassword = (e) => {
     this.setState({ password: e.target.value });
+  };
+
+  handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      //this.handleSubmit();
+      this.btn.click();
+    }
   };
 
   handleSubmit = async (e) => {
@@ -71,7 +78,7 @@ class Login extends React.Component {
                     id="username"
                     label="Username"
                     type="email"
-                    onChange={this.onChangeUsername}
+                    onChange={this.handleChangeUsername}
                     fullWidth
                     autoFocus
                     required
@@ -84,7 +91,8 @@ class Login extends React.Component {
                     id="password"
                     label="Password"
                     type="password"
-                    onChange={this.onChangePassword}
+                    onChange={this.handleChangePassword}
+                    onKeyPress={this.handleKeyPress}
                     fullWidth
                     required
                   />
@@ -96,6 +104,7 @@ class Login extends React.Component {
                   variant="outlined"
                   color="primary"
                   onClick={this.handleSubmit}
+                  ref={(node) => (this.btn = node)}
                   style={{ textTransform: "none" }}
                 >
                   Login
