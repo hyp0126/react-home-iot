@@ -12,6 +12,8 @@
 
 6. (ESP8266) & (UNO->Rpi) -> <b>AWS#1(mosquitto -> Express, https://mqtt.domain/api/) -> AWS#2(React, https://iot.domain/)</b>
 
+7. (ESP8266) & (UNO->Rpi) -> <b>AWS(mosquitto -> Express, https://mqtt.domain/api/) -> GCP(React, NGINX, https://iot.domain/)</b>
+
 ### Webpage Screenshots
 <p align="center">
   <img src="https://github.com/hyp0126/react-express-mqtt-web/blob/master/RealTimeGuage.png?raw=true" width="700" />
