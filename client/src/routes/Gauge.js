@@ -47,7 +47,7 @@ class Guage extends React.Component {
     };
   }
 
-  componentWillMount() {}
+  //componentWillMount() {}
 
   getRoomData = async () => {
     var roomData = await homeApiGetRoomData();
@@ -71,7 +71,9 @@ class Guage extends React.Component {
       }
 
       //client = new W3CWebSocket(DotEnv.ADDRESS_WEBSOCKET);
-      client = new W3CWebSocket(DotEnv.ADDRESS_WEBSOCKET+"?auth=" + sessionStorage.getItem("token"));
+      client = new W3CWebSocket(
+        DotEnv.ADDRESS_WEBSOCKET + "?auth=" + sessionStorage.getItem("token")
+      );
 
       client.onopen = () => {
         console.log("WebSocket Client Connected");
@@ -89,13 +91,13 @@ class Guage extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    //clearInterval(this.state.intervalId);
-    // if (client != null) {
-    //   client.close();
-    // }
-    // client = null;
-  }
+  //componentWillUnmount() {
+  //clearInterval(this.state.intervalId);
+  // if (client != null) {
+  //   client.close();
+  // }
+  // client = null;
+  //}
 
   onChangeLed = async (e) => {
     console.log(e.target.id);

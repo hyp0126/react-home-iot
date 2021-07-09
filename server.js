@@ -14,7 +14,6 @@ dotenv = require("dotenv");
 const express = require("express");
 const jwt = require("express-jwt");
 const path = require("path");
-const bodyParser = require("body-parser");
 var cors = require("cors");
 var cookieParser = require("cookie-parser");
 
@@ -57,13 +56,13 @@ myApp.use(cors(corsOption));
 //myApp.use(cors({ credentials: true, origin: ['http//localhost:3000'] }))
 
 // Set up path and public folders and view folders
-myApp.set("views", path.join(__dirname, "views"));
+//myApp.set("views", path.join(__dirname, "views"));
 
 // Use public folders for CSS etc.
-myApp.use(express.static(__dirname + "/public"));
-myApp.set("view engine", "ejs");
-myApp.use(bodyParser.urlencoded({ extended: false }));
-myApp.use(bodyParser.json());
+//myApp.use(express.static(__dirname + "/public"));
+//myApp.set("view engine", "ejs");
+myApp.use(express.urlencoded({ extended: false }));
+myApp.use(express.json());
 
 // Set up Cookie Parser
 myApp.use(cookieParser());

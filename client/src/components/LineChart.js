@@ -29,14 +29,19 @@ class LineChart extends React.Component {
             x: new Date(tempMsg.date),
             y: parseFloat(tempMsg.value),
           });
-          if (tempMsg.value > maxY) maxY = tempMsg.value;
-          if (tempMsg.value < minY) minY = tempMsg.value;
+          if (tempMsg.value > maxY) maxY = parseFloat(tempMsg.value);
+          if (tempMsg.value < minY) minY = parseFloat(tempMsg.value);
         }
       }
     }
 
     maxY = Math.ceil(maxY) + 5;
     minY = Math.floor(minY) - 5;
+    if (maxY < minY) {
+      var temp = maxY;
+      maxY = minY;
+      minY = temp;
+    }
     var dateStrs = this.props.dateStr.split("-");
 
     var dataPtrs = [];
