@@ -1,4 +1,4 @@
-# Home IoT Project
+# Home IoT Project (Express + React)
 
 ## Introduction
 The website shows room temperature and humidity, and control LED in a house.
